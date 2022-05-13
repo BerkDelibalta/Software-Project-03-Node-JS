@@ -12,7 +12,7 @@ ____
 
 ---
 <h3 style="color:cornsilk">The main idea</h3>
-<p style="color: cornsilk">The main idea of the project is proposing a general idea regarding How the things are going behind the scenes of a Web Ecommmerce Application</b>)</p>
+<p style="color: cornsilk">The main idea of the project is proposing a general idea regarding How the things are going behind the scenes of a Web Ecommmerce Application</b></p>
 
 
 ----
