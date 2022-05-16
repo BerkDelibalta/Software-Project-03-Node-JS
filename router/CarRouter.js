@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const {
+      authenticateUser,
+      authorizePermissions } = require('../middleware/authentication');
 
 const { 
     getAllCars,
@@ -11,15 +14,15 @@ const {
 
 router
       .route('/')
-      .get(getAllCars)
-      .post(createCar);
+      .get(authenticateUser,getAllCars)
+      .post([authenticateUser,authorizePermissions("admin")],createCar);
 
 
 router
       .route('/:id')
       .get(getSingleCar)
-      .patch(updateCar)
-      .delete(deleteCar)
+      .patch([authenticateUser,authorizePermissions("admin")],updateCar)
+      .delete([authenticateUser,authorizePermissions("admin")],deleteCar)
 
 
 

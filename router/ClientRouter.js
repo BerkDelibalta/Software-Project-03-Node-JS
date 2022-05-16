@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-
+const {
+    authenticateUser,
+    authorizePermissions } = require('../middleware/authentication');
 
 const {
     updateClient,
@@ -11,10 +13,10 @@ const {
 
 router
      .route('/')
-     .get(getAllClient);
+     .get(authenticateUser,getAllClient);
 
-router.route('/getClient').get(getSingleClient);
-router.route('/updateClient').patch(updateClient);
-router.route('/deleteClient') .delete(deleteClient);
+router.route([authenticateUser,authorizePermissions("admin","user")],'/getClient').get(getSingleClient);
+router.route([authenticateUser,authorizePermissions("admin","user")],'/updateClient').patch(updateClient);
+router.route([authenticateUser,authorizePermissions("admin","user")],'/deleteClient') .delete(deleteClient);
     
 module.exports = router;
