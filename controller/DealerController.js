@@ -18,7 +18,7 @@ const TABLE_NAME ='Dealer';
 
 
 const createDealer = async (req, res) => {
-    const {name, carList =[]} = req.body;
+    const {name, carList} = req.body;
 
     if(!name) {
         throw new CustomError.BadRequestError('Enter the dealer name');
@@ -52,20 +52,17 @@ const updateDealer = async (req, res) => {
         throw new CustomError.NotFoundError('No such dealer found with id' + dealerId);
     } else {
 
-    const {carList} = req.body;
+    const {cars} = req.body;
 
-    if(carList.length < 0) {
-        throw new CustomError.BadRequestError('No such update');
-    }
-
-    dealer.cars = cars;
+    dealer.Item.cars = cars;
 
     const updateParams = {
         TableName: TABLE_NAME,
-        Item:cars
+        Key: {id},
+        Item:{cars},
     }
 
-    await dynamoDBClient.put(updateParams).promise();
+    await dynamoDBClient.update(updateParams).promise();
     res.status(StatusCodes.OK).json(dealer);    
 }
 
@@ -88,7 +85,7 @@ const deleteDealer = async (req, res) => {
     } else {
 
     await dynamoDBClient.delete(params).promise();
-    res.status(StatusCodes.OK).json(dealer);
+    res.status(StatusCodes.OK).send("The dealer has been successfully deleted");
 }
 }
 
