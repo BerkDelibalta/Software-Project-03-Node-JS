@@ -3,7 +3,6 @@ const router = express.Router();
 
 
 const {
-    createClient,
     updateClient,
     deleteClient,
     getAllClient,
@@ -12,21 +11,10 @@ const {
 
 router
      .route('/')
-     .get(getAllClient)
-     .post(createClient);
+     .get(getAllClient);
 
-router
-     .route('/:id')
-     .get(getSingleClient)
-     .patch(updateClient)
-     .delete(deleteClient);
-
+router.route('/getClient').get(getSingleClient);
+router.route('/updateClient').patch(updateClient);
+router.route('/deleteClient') .delete(deleteClient);
     
-module.exports = {
-    createClient,
-    updateClient,
-    deleteClient,
-    getAllClient,
-    getSingleClient
-
-}
+module.exports = router;

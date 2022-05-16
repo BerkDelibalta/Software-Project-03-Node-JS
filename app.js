@@ -9,10 +9,6 @@ const app = express();
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const rateLimiter = require('express-rate-limit');
-const helmet = require('helmet');
-const xss = require('xss-clean');
-const cors = require('cors');
 
 //Connection port
 const port = process.env.PORT || 5000;
@@ -30,21 +26,10 @@ const DealerRouter = require('./router/DealerRouter');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorMiddleware = require('./middleware/error-handler');
 
-app.set('trust proxy', 1);
-app.use(rateLimiter({
-    windowMs: 15 * 60 * 1000,
-    max: 60,
-}));
-
-app.use(helmet());
-app.use(cors());
-app.use(xss());
-
 app.use(morgan('tiny'));
-app.use(express.json());
 app.use(bodyParser.urlencoded());
+app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
-
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/cars', CarRouter);
@@ -55,8 +40,50 @@ app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 app.use(morgan);
 
+/*
+const AWS = require('aws-sdk');
+require('dotenv').config();
+
+    AWS.config.update({
+        region:process.env.AWS_DEFAULT_REGION,
+        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
+    });
+
+
+const DynamoDB = new AWS.DynamoDB();
+
+async function createTable() {
+    const params = {
+      TableName: "Client",
+      KeySchema: [{ AttributeName: "email", KeyType: "HASH" },
+      { AttributeName: "name", KeyType: "RANGE" },],
+      AttributeDefinitions: [  
+      { AttributeName: "email", AttributeType: "S" },
+      { AttributeName: "name", AttributeType: "S" },
+     ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10,
+      },
+    };
+  
+    DynamoDB.createTable(params, function(err, data) {
+      if (err) {
+        console.error("Unable to create table", err);
+      } else {
+        console.log("Created table", data);
+      }
+    });
+  }
+  
+  module.exports = {
+    createTable,
+  };
+*/
 const start = async () => {
     try {
+   //     await createTable();
         app.listen(port, console.log(`Server is listening on port ${port}...`));
     } catch (error) {
         console.log(error)

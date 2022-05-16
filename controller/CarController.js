@@ -3,7 +3,17 @@ const Car = require('../models/Car');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/index');
 
-const  dynamoDBClient  = require('../db/AwsDynamoDBConnection')
+const AWS = require('aws-sdk');
+require('dotenv').config();
+
+    AWS.config.update({
+        region:process.env.AWS_DEFAULT_REGION,
+        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
+    });
+
+
+const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME ='Car';
 
 const getAllCars = async (req, res) => {
@@ -11,14 +21,15 @@ const getAllCars = async (req, res) => {
         TableName: TABLE_NAME,
     };
     const cars = await dynamoDBClient.scan(params).promise();
-    if(cars.length < 0) {
+    if(cars === {}){
         throw new CustomError.NotFoundError('No cars found');
+    } else {
+        res.status(StatusCodes.OK).json({cars,count:cars.length});
     }
-    res.status(StatusCodes.OK).json({cars,count:cars.length});
 }
 
 const getSingleCar = async (req, res) => {
-    const { id: carId } = req.params;
+    const { id} = req.params;
     const params = {
         TableName: TABLE_NAME,
         Key: {
@@ -28,11 +39,11 @@ const getSingleCar = async (req, res) => {
 
     const car = await dynamoDBClient.get(params).promise();
 
-    if(!car){
+    if(car === {}){
         throw new CustomError.NotFoundError('No car found with id ' + carId);
-    }
-
+    } else {
     res.status(StatusCodes.OK).json(car);
+    }
 }
 
 const createCar = async (req, res) => {
@@ -56,7 +67,7 @@ const createCar = async (req, res) => {
 }
 
 const updateCar = async (req, res) => {
-    const {id: carId} = req.params;
+    const {id} = req.params;
     const { price } = req.body;
 
     const params = {
@@ -68,31 +79,34 @@ const updateCar = async (req, res) => {
 
     const car = await dynamoDBClient.get(params).promise();
 
-    if(!car) {
+    if(car === {}) {
         throw new CustomError.NotFoundError('No such car found with id' + carId);
-    }
+    } else {
 
     car.price = price;
 
     const updateParams = {
         TableName: TABLE_NAME,
+        Key: {
+            id
+        },
         Item: car,
     }
 
     await dynamoDBClient.put(updateParams).promise();
-
     res.status(StatusCodes.OK).json(car);
+}
 
 }
 
 const deleteCar = async (req, res) => {
-    const {id: carId} = req.params;
+    const {id} = req.params;
 
     const car = await dynamoDBClient.get(params).promise();
 
-    if(!car) {
+    if(car === {}) {
         throw new CustomError.NotFoundError('No such car found with id' + carId);
-    }
+    } else {
 
     const params = {
         TableName: TABLE_NAME,
@@ -100,9 +114,10 @@ const deleteCar = async (req, res) => {
             id,
         },
     };
-    await dynamoClient.delete(params).promise();
-
+    await dynamoDBClient.delete(params).promise();
     res.status(StatusCodes.OK).json(car);
+}
+
 }
 
 

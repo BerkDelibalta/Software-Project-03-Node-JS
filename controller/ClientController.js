@@ -1,102 +1,109 @@
-const Client = require('../models/Client');
-
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/index');
+const Client = require('../models/Client');
+const AWS = require('aws-sdk');
+require('dotenv').config();
 
-const  dynamoDBClient  = require('../db/AwsDynamoDBConnection');
+    AWS.config.update({
+        region:process.env.AWS_DEFAULT_REGION,
+        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
+    });
+
+
+const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME ='Client';
 
 
-const createClient = async (req, res) => {
-    const {name, surname, age, budget} = req.body;
-
-    if(!name || !surname || !age || !budget) {
-        throw new CustomError.BadRequestError('Provide all parameters');
-    }
-
-    const client = new Client(name, surname, age, budget);
-
-    const params = {
-        TableName: TABLE_NAME,
-        Item : client
-    }
-
-    await dynamoDBClient.put(params).promise();
-    res.status(StatusCodes.CREATED).json(client);
-}
-
-
 const updateClient = async (req, res) => {
-    const { id: clientId} = req.params;
+    const {email,password, budget} = req.body;
     const params = {
         TableName: TABLE_NAME,
         Key: {
-            id,
-        }
-    }
+            email,
+          },
+};
+    
     const client = await dynamoDBClient.get(params).promise();
 
     if(!client) {
-        throw new CustomError.NotFoundError('No such a client with id ' + clientId);
+        throw new CustomError.NotFoundError('No such client with id' + clientId);
     }
 
-    const {budget} = req.body;
-
+    const isPasswordMatching = client.Item.password === password;
+    
+    if(!isPasswordMatching) {
+        throw new Error("Invalid credentials");
+    }
+    
     if(!budget) {
         throw new CustomError.BadRequestError('No such budget update');
     }
 
-    client.budget = budget;
-
+    client.Item.budget = budget;
+   
     const updateParams = {
         TableName: TABLE_NAME,
-        Item:client
+        Key: { email},
+        Item: client,
     }
 
-    await dynamoDBClient.put(updateParams).promise();
+    await dynamoDBClient.update(updateParams).promise();
     res.status(StatusCodes.OK).json(client);
 }
 
 
 const deleteClient = async (req, res) => {
-    const { id: clientId} = req.params;
+    const { email , password} = req.body;
     const params = {
         TableName: TABLE_NAME,
         Key: {
-            id,
-        }
-    }
+            email
+          },
+         
+};
+    
     const client = await dynamoDBClient.get(params).promise();
-
+    
     if(!client) {
-        throw new CustomError.NotFoundError('No such a client with id ' + clientId);
+        throw new CustomError.NotFoundError('No such client with id' + client.Item.id);
+    }
+    
+   
+    const isPasswordMatching = client.Item.password === password;
+    
+    if(!isPasswordMatching) {
+        throw new Error("Invalid credentials");
     }
 
-    await dynamoDBClient.delete(params).promise();
-    res.status(StatusCodes.OK).json(client);
+   await dynamoDBClient.delete(params).promise();
+   res.status(StatusCodes.OK).send("Client with email " + email + " has been successfully deleted");
+ 
 }
 
 const getAllClient = async (req, res) => {
     const params = {
         TableName: TABLE_NAME,
     }
-    const clients = await dynamoDBClient.get(params).promise();
+    const clients = await dynamoDBClient.scan(params).promise();
 
     if(!clients) {
-        throw new CustomError.NotFoundError('No clients');
+       throw new CustomError.NotFoundError('No clients');
     }
 
     res.status(StatusCodes.OK).json({clients,count:clients.length});
+   
 }
 
 const getSingleClient = async (req, res) => {
-    const { id: clientId} = req.params;
-     const params = {
+    const {email} = req.body;
+    const params = {
         TableName: TABLE_NAME,
         Key: {
-            id
-        }
+            email
+          },
     }
+    
     const client = await dynamoDBClient.get(params).promise();
 
     if(!client) {
@@ -108,7 +115,6 @@ const getSingleClient = async (req, res) => {
 
 
 module.exports = {
-    createClient,
     updateClient,
     deleteClient,
     getAllClient,

@@ -1,42 +1,91 @@
-const User = require('../models/User');
+const Client = require('../models/Client');
+
 const HttpStatus = require('http-status-codes');
-const CustomError = require('../errors');
+const CustomAPIError = require('../errors/custom-api');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
 
-const register = async (req, res) => {
-    const { email, name, password } = req.body;
 
-    const isEmailAlreadyExists = await User.findOne({ email });
-    if (isEmailAlreadyExists) {
-        throw new CustomError.BadRequestError('Email already exists');
+const AWS = require('aws-sdk');
+require('dotenv').config();
+AWS.config.update({
+    region: process.env.AWS_DEFAULT_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+
+const dynamoDBClient= new AWS.DynamoDB.DocumentClient();
+const TABLE_NAME ='Client';
+
+
+const register = async (req, res) => {
+    const {name, surname, email, password, budget} = req.body;
+
+    if(!name || !surname || !email || !password || !budget) {
+        throw new CustomAPIError.BadRequestError('Provide all parameters');
     }
 
     // first registered user is an admin and others are users
-    const isFirstAccount = await User.countDocuments({}) === 0;
-    const role = isFirstAccount ? 'admin' : 'user';
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            email,
+        }
+    }
 
-    const user = await User.create({ name, email, password, role });
-    const tokenUser = createTokenUser(user);
-    attachCookiesToResponse({ res, user: tokenUser });
-    res.status(HttpStatus.StatusCodes.CREATED).json({ user: tokenUser });
+    const client = await dynamoDBClient.get(params).promise();
+
+    if(client.Item === undefined) {
+        const clients = await dynamoDBClient.scan(params).promise();
+        const isFirstAccount = clients.Items.length === 0;
+        const role = isFirstAccount ? 'admin' : 'user';
+    
+        
+        const clientObject = new Client(name, surname, email, password, budget, role);
+        const registerParams = {
+            TableName: TABLE_NAME,
+            Item: clientObject,
+        };
+    
+        await dynamoDBClient.put(registerParams).promise();
+        const tokenClient = createTokenUser(req.body);
+        attachCookiesToResponse({ res, client: tokenClient });
+        res.status(HttpStatus.StatusCodes.CREATED).json({ client:clientObject }); 
+    } else {
+        throw new Error('Client already exists')
+    }
 };
 
 const login = async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) throw new CustomError.BadRequestError('Please provide email and password');
+    if (!email || !password) throw new CustomAPIError.BadRequestError('Please provide email and password');
 
-    const user = await User.findOne({ email });
-    if (!user) throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            email
+        },
+    };
 
-    const isPasswordCorrect = await user.comparePassword(password);
-    if (!isPasswordCorrect) {
-        throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    const client = await dynamoDBClient.get(params).promise();
+    if (!client) throw new CustomAPIError.UnauthenticatedError('Invalid Credentials');
+
+    const isMatch = client.Item.password == password.toString();
+
+    if (!isMatch) {
+        throw new Error('Invalid Credentials ');
     }
 
-    const tokenUser = createTokenUser(user);
-    attachCookiesToResponse({ res, user: tokenUser });
-    res.status(HttpStatus.StatusCodes.OK).json({ user });
+    const clientObject = {
+        name : client.Item.name,
+        clientId : client.Item.id,
+        role : client.Item.role
+    }
+
+    const tokenClient = createTokenUser(clientObject);
+    attachCookiesToResponse({ res, client: tokenClient });
+    res.status(HttpStatus.StatusCodes.OK).json({ client });
 };
 
 
@@ -45,12 +94,12 @@ const logout = async (req, res) => {
         httpOnly: true,
         expires: new Date(Date.now()),
     });
-    res.status(HttpStatus.StatusCodes.OK).send({ message: `user ${req.body.name} logged out` });
+    res.status(HttpStatus.StatusCodes.OK).send({ message: `client logged out` });
 };
 
 
 module.exports = {
     register,
     login,
-    logout
+    logout,
 };

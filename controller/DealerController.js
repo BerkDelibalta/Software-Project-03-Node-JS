@@ -3,12 +3,22 @@ const Dealer = require('../models/Dealer');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/index');
 
-const  dynamoDBClient  = require('../db/AwsDynamoDBConnection')
+const AWS = require('aws-sdk');
+require('dotenv').config();
+
+    AWS.config.update({
+        region:process.env.AWS_DEFAULT_REGION,
+        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
+    });
+
+
+const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME ='Dealer';
 
 
-const createDealer = (req, res) => {
-    const {name, carList:cars} = req.body;
+const createDealer = async (req, res) => {
+    const {name, carList =[]} = req.body;
 
     if(!name) {
         throw new CustomError.BadRequestError('Enter the dealer name');
@@ -26,8 +36,8 @@ const createDealer = (req, res) => {
 }
 
 
-const updateDealer = (req, res) => {
-    const {id:dealerId} = req.params;
+const updateDealer = async (req, res) => {
+    const {id} = req.params;
 
     const params = {
         TableName: TABLE_NAME,
@@ -38,11 +48,11 @@ const updateDealer = (req, res) => {
 
     const dealer = await dynamoDBClient.get(params).promise();
 
-    if(!dealer) {
+    if(dealer === {}) {
         throw new CustomError.NotFoundError('No such dealer found with id' + dealerId);
-    }
+    } else {
 
-    const {carList:cars} = req.body;
+    const {carList} = req.body;
 
     if(carList.length < 0) {
         throw new CustomError.BadRequestError('No such update');
@@ -55,13 +65,14 @@ const updateDealer = (req, res) => {
         Item:cars
     }
 
-    await dynamoDBClient.put(params).promise();
+    await dynamoDBClient.put(updateParams).promise();
     res.status(StatusCodes.OK).json(dealer);    
 }
 
+}
 
-const deleteDealer = (req, res) => {
-    const {id:dealerId} = req.params;
+const deleteDealer = async (req, res) => {
+    const {id} = req.params;
 
     const params = {
         TableName: TABLE_NAME,
@@ -72,31 +83,32 @@ const deleteDealer = (req, res) => {
 
     const dealer = await dynamoDBClient.get(params).promise();
 
-    if(!dealer) {
+    if(dealer === {}) {
         throw new CustomError.NotFoundError('No such dealer found with id' + dealerId);
-    }
+    } else {
 
     await dynamoDBClient.delete(params).promise();
     res.status(StatusCodes.OK).json(dealer);
 }
+}
 
 
-const getAllDealers = (req, res) => {
+const getAllDealers = async (req, res) => {
     const params = {
         TableName: TABLE_NAME,
     }
 
-    const dealers = await dynamoDBClient.get(params).promise();
+    const dealers = await dynamoDBClient.scan(params).promise();
     
-    if(!dealers) {
+    if(dealers === {}) {
         throw new CustomError.NotFoundError('No such dealers found');
-    }
-
+    } else {
     res.status(StatusCodes.OK).json({dealers, count:dealers.length});
+    }
 }
 
-const getSingleDealer = (req, res) => {
-    const {id:dealerId} = req.params;
+const getSingleDealer = async (req, res) => {
+    const {id} = req.params;
     const params = {
         TableName: TABLE_NAME,
         Key: {
@@ -105,10 +117,11 @@ const getSingleDealer = (req, res) => {
     };
 
     const dealer = await dynamoDBClient.get(params).promise();
-    if(!dealer) {
+    if(dealer === {}) {
         throw new CustomError.NotFoundError('No such dealer found with id ' + dealerId);
-    }
+    } else {
     res.status(StatusCodes.OK).json(dealer);
+}
 }
 
 
