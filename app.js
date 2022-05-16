@@ -40,56 +40,14 @@ app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 app.use(morgan);
 
-/*
-const AWS = require('aws-sdk');
-require('dotenv').config();
 
-    AWS.config.update({
-        region:process.env.AWS_DEFAULT_REGION,
-        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
-    });
-
-
-const DynamoDB = new AWS.DynamoDB();
-
-async function createTable() {
-    const params = {
-      TableName: "Client",
-      KeySchema: [{ AttributeName: "email", KeyType: "HASH" },
-      { AttributeName: "name", KeyType: "RANGE" },],
-      AttributeDefinitions: [  
-      { AttributeName: "email", AttributeType: "S" },
-      { AttributeName: "name", AttributeType: "S" },
-     ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: 10,
-        WriteCapacityUnits: 10,
-      },
-    };
-  
-    DynamoDB.createTable(params, function(err, data) {
-      if (err) {
-        console.error("Unable to create table", err);
-      } else {
-        console.log("Created table", data);
-      }
-    });
-  }
-  
-  module.exports = {
-    createTable,
-  };
-*/
 const start = async () => {
     try {
-   //     await createTable();
         app.listen(port, console.log(`Server is listening on port ${port}...`));
     } catch (error) {
         console.log(error)
     }
 
 }
-
 
 start();
