@@ -83,17 +83,19 @@ const updateCar = async (req, res) => {
         throw new CustomError.NotFoundError('No such car found with id' + carId);
     } else {
 
-    car.price = price;
+        
+    car.Item.price = price;
+
 
     const updateParams = {
         TableName: TABLE_NAME,
-        Key: {
+        Key:{
             id
         },
         Item: car,
     }
 
-    await dynamoDBClient.put(updateParams).promise();
+    await dynamoDBClient.update(updateParams).promise();
     res.status(StatusCodes.OK).json(car);
 }
 
@@ -102,20 +104,22 @@ const updateCar = async (req, res) => {
 const deleteCar = async (req, res) => {
     const {id} = req.params;
 
-    const car = await dynamoDBClient.get(params).promise();
-
-    if(car === {}) {
-        throw new CustomError.NotFoundError('No such car found with id' + carId);
-    } else {
-
     const params = {
         TableName: TABLE_NAME,
         Key: {
             id,
         },
     };
+
+    const car = await dynamoDBClient.get(params).promise();
+
+    if(car === {} || car === undefined) {
+        throw new CustomError.NotFoundError('No such car found with id' + id);
+    } else {
+
+    
     await dynamoDBClient.delete(params).promise();
-    res.status(StatusCodes.OK).json(car);
+    res.status(StatusCodes.OK).json("The car "+ car.Item.name +" has been deleted successfully");
 }
 
 }
