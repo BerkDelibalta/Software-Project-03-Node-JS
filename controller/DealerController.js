@@ -2,18 +2,9 @@ const Dealer = require('../models/Dealer');
 
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/index');
-
-const AWS = require('aws-sdk');
-require('dotenv').config();
-
-    AWS.config.update({
-        region:process.env.AWS_DEFAULT_REGION,
-        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
-    });
+const {dynamoDBClient} = require('../db/AWSConnect');
 
 
-const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME ='Dealer';
 
 

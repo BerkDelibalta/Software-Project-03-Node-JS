@@ -15,8 +15,19 @@ router
      .route('/')
      .get(authenticateUser,getAllClient);
 
-router.route([authenticateUser,authorizePermissions("admin","user")],'/getClient').get(getSingleClient);
-router.route([authenticateUser,authorizePermissions("admin","user")],'/updateClient').patch(updateClient);
-router.route([authenticateUser,authorizePermissions("admin","user")],'/deleteClient') .delete(deleteClient);
+router
+     .route('/getClient')
+     .get([authenticateUser,authorizePermissions("admin","user")],getSingleClient);
+
+     
+router
+     .route('/updateClient')
+     .patch([authenticateUser,authorizePermissions("admin","user")],updateClient);
+
+
+router
+     .route('/deleteClient')
+     .delete([authenticateUser,authorizePermissions("admin","user")],deleteClient);
     
+     
 module.exports = router;
