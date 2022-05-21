@@ -47,7 +47,6 @@ const updateOrder = async (req, res) => {
     const {id:orderId} = req.params;
     const {updatePrice} = req.body;
 
-    console.log(orderId +" - " +updatePrice)
     if(!orderId && !updatePrice){
         throw new CustomError.BadRequestError("Order id or update price doesnt exist");
     }
