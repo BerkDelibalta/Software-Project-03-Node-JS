@@ -1,5 +1,4 @@
 const { v1: uuidv1 } = require('uuid');
-const bcrypt = require('bcryptjs');
 
 class Client {
     constructor(name,surname,email,password,budget,role){

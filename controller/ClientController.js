@@ -1,6 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/index');
-const Client = require('../models/Client');
 const AWS = require('aws-sdk');
 require('dotenv').config();
 

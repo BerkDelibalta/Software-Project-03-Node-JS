@@ -1,5 +1,6 @@
 const CustomError = require('../errors');
 const { isTokenValid } = require('../utils/index');
+const jwt_decode = require('jwt-decode');
 
 const authenticateUser = async (err, req, res, next) => {
     const token = req.signedCookies.token;
@@ -9,8 +10,8 @@ const authenticateUser = async (err, req, res, next) => {
     }
 
     try {
-        const { name, id, role } = isTokenValid({ token });
-        req.user = { name, id, role };
+        const { name, clientId, role } = isTokenValid({ token });
+        req.user = { name, clientId, role };
         next()
     } catch (error) {
         throw new CustomError.UnauthenticatedError('Authentication Invalid - token is invalid');
@@ -21,12 +22,13 @@ const authenticateUser = async (err, req, res, next) => {
 
 const authorizePermissions = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.client.role)) {
+        var decoded = jwt_decode(req.signedCookies.token);
+        if (!roles.includes(decoded.role)) {
             throw new CustomError.UnauthorizedError(
                 'Unauthorized access to this route'
             );
         }
-        next();
+        next()
     }
 };
 
