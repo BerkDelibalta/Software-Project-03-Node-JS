@@ -45,12 +45,5 @@ ____
 </ol>
 </div>
 
----
-
-<div>
-  <ol style="color: cornsilk;font-size: medium">
-    <strong>Attention!</strong> <p>The project will be updated soon, new feature additions and small bug fixes are on the way</p>
-  </ol>
-</div>
   
   </html>
