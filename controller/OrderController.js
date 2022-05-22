@@ -9,7 +9,7 @@ const TABLE_NAME ='Order';
 
 const createOrder = async (req, res) => {
     const {clientId} = req.signedCookies;
-    const {carId:id} = req.body;
+    const {carId:id, email} = req.body;
 
     if(!id && !clientId) {
         throw new CustomError.BadRequestError("Prodive both car and client id's");
@@ -30,8 +30,24 @@ const createOrder = async (req, res) => {
         throw new CustomError.BadRequestError("No such car existing!");
     }
 
+    const clientParams = {
+        TableName: 'Client',
+        Key: {email},
+    }
+
+    const client = await dynamoDBClient.get(clientParams).promise();
+
+    if(!car){
+        throw new CustomError.BadRequestError("No such client existing!");
+    }
+
+
+    if(car.Item.price > client.Item.budget) {
+        throw new CustomError.BadRequestError("Client budget isn't sufficient to order")
+    }
+
     let dateObject = new Date();
-    const order = new Order(id ,clientId ,dateObject.toUTCString());
+    const order = new Order(id ,clientId, email ,dateObject.toUTCString());
     const createParams = {
         TableName: TABLE_NAME,
         Item : order,
