@@ -45,5 +45,9 @@ ____
 </ol>
 </div>
 
+
+<div>
+  <p><strong>Attention!</strong> This project will be updated soon, some new features regarding the functionality will be added such as stripe payment and email notifications as well as the security enhancements are going to be made, Also  Mocha and Integration tests regarding the project will be provided along with instructions on how the project works, So stay tuned 😉</p>
+</div>
   
   </html>
