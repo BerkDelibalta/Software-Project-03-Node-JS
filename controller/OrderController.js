@@ -37,11 +37,7 @@ const createOrder = async (req, res) => {
 
     const client = await dynamoDBClient.get(clientParams).promise();
 
-    if(!car){
-        throw new CustomError.BadRequestError("No such client existing!");
-    }
-
-
+    
     if(car.Item.price > client.Item.budget) {
         throw new CustomError.BadRequestError("Client budget isn't sufficient to order")
     }
