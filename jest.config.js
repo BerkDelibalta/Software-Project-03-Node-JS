@@ -8,8 +8,6 @@ module.exports = {
     },
 
     paths: {
-      "@modules/*": ["modules/*"],
-      "@config/*": ["config/*"],
-      "@shared/*": ["shared/*"]
+      "@modules/*": ["controller/*"],
   }
   };
