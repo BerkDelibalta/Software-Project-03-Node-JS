@@ -46,7 +46,7 @@ const register = async (req, res) => {
             attachCookiesToResponse({ res, client: tokenClient });
             res.status(HttpStatus.StatusCodes.CREATED).json(clientObject);
         } else {
-            throw new Error("Client already exists");
+            throw new BadRequestError("Client already exists");
         }
 };
 

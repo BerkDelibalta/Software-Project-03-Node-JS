@@ -5,11 +5,11 @@ const httpMocks = require('node-mocks-http');
 const { StatusCodes } = require('http-status-codes');
 
 const { Clients } = require('../../mock-data/client.mock.data.json');
-const CustomAPIError = require('../../../errors/custom-api');
+var {BadRequestError} = require('../../../errors/index');
 
 
 dynamoDBClient.put = jest.fn();
-CustomAPIError.BadRequestError = jest.fn();
+BadRequestError = jest.fn();
 let req, res, next;
 
 beforeEach(() => {
@@ -85,7 +85,7 @@ describe("AuthController", () => {
       const client = req.body;
       dynamoDBClient.put({ TableName: 'Client', Item: client });
       register(req, res).then((response) => {
-        expect(response).toBe(typeof CustomAPIError.BadRequestError);
+        expect(response).toBe(typeof BadRequestError);
         expect(response).toBe(errorMessage);
       })
       dynamoDBClient.delete({ TableName: 'Client', Key: { email } });
