@@ -81,8 +81,6 @@ describe("AuthController", () => {
                 .catch(() => {
                     console.log('LOGIN INF0 :  should handle missing parameter errors catched')
                 })
-
-
         });
 
 
