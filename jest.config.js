@@ -5,6 +5,11 @@ module.exports = {
     
     transform: {
       "^.+\\.(js|jsx)$": "babel-jest"
-    }
-    
+    },
+
+    paths: {
+      "@modules/*": ["modules/*"],
+      "@config/*": ["config/*"],
+      "@shared/*": ["shared/*"]
+  }
   };

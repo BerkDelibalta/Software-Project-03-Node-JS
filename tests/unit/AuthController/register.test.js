@@ -1,4 +1,4 @@
-const { register } = require('../../../controller/AuthController');
+const { register } = require('../../../controller/authController');
 const { dynamoDBClient } = require('../../../db/AWSConnect');
 
 const httpMocks = require('node-mocks-http');
