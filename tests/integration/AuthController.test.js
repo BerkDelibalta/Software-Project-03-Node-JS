@@ -36,7 +36,9 @@ it("INTEGRATION TEST - should return error 500 on malformed data with POST/REGIS
         const response = await request(app)
         .post(endpointurl)
         .send({title: "Provide all parameters"})
-        expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);    }
+        expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR); 
+        expect(response.body).toStrictEqual({message: "Something went wrong try again later"});
+    }
 })
 
 });
