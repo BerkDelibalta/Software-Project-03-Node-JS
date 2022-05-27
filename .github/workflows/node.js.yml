@@ -1,27 +1,20 @@
-name: Node.js CI
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-jobs:
-  build:
-
-    runs-on: macos-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm run build --if-present
-    - run: npm test
+stages:
+    - testing
+    
+    
+Testing:
+    stage: testing
+    image: node:latest
+    before_script:
+        # ENV is exported as a path to your "ENV" file, 
+        # this is copying it to a local '.env' file
+        - cp $ENV .env
+        # If you need it, this is a way to export the
+        # environment variables inside your file
+        - source .env; export $(cut -d= -f1 .env);
+        # Debugging the pipelines
+        - ls -lah
+        # Your old commands
+        - npm install --no-optional
+    script:
+        - npm run test
