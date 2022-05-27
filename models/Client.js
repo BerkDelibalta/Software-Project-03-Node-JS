@@ -1,8 +1,8 @@
 const { v1: uuidv1 } = require('uuid');
 
 class Client {
-    constructor(name,surname,email,password,budget,role){
-        this.id = uuidv1();
+    constructor(clientId,name,surname,email,password,budget,role){
+        this.id = clientId;
         this.name = name;
         this.surname = surname;
         this.email = email;

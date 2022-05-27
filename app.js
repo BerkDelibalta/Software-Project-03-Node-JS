@@ -1,6 +1,7 @@
 require('dotenv').config();
 require('express-async-errors');
 
+
 //express
 const express = require('express');
 const app = express();
@@ -13,9 +14,6 @@ const rateLimiter = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const cors = require('cors');
-
-//Connection port
-const port = process.env.PORT || 5000;
 
 
 // Routers
@@ -58,14 +56,4 @@ app.use(errorMiddleware);
 app.use(morgan);
 
 
-
-const start = async () => {
-    try {
-        app.listen(port, console.log(`Server is listening on port ${port}...`));
-    } catch (error) {
-        console.log(error)
-    }
-
-}
-
-start();
+module.exports = app;

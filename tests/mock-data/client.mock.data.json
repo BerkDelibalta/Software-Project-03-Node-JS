@@ -1,0 +1,68 @@
+{
+    "Clients":[
+    {
+		"clientId": "OMY77H45HG4D",
+    	"name":"George",
+    	"surname":"Brighton",
+    	"email":"george@gmail.com",
+    	"password":"secret",
+    	"budget":"300000"
+    },
+    {
+		"clientId": "OMY7H5RE5PD",
+    	"name":"William",
+    	"surname":"Windsor",
+    	"email":"william@gmail.com",
+    	"password":"secret",
+    	"budget":"3000000"
+    },
+    {
+		"clientId": "OMY77ZGY5PD",
+		"name": "Tasha Houston",
+		"surname": "Nasim Hester",
+		"email": "libero.lacus@icloud.com",
+		"password": "DUQ52TOK5GD",
+		"budget": "$48151.35"
+	},
+	{
+		"clientId": "HXJ65HRP3KU",
+		"name": "Maite Rosario",
+		"surname": "Melvin Duffy",
+		"email": "dolor.nonummy@outlook.ca",
+		"password": "ICY66OJL3SU",
+		"budget": "$74758.13"
+	},
+	{
+		"clientId": "FLX93BOB6KO",
+		"name": "Sebastian Berry",
+		"surname": "Josiah Owens",
+		"email": "dui@icloud.com",
+		"password": "UPI47QXP8BV",
+		"budget": "$76362.31"
+	},
+	{
+		"clientId": "OGU38VZX3HH",
+		"name": "Tanek Gay",
+		"surname": "Priscilla Lopez",
+		"email": "hendrerit.a.arcu@protonmail.com",
+		"password": "GXA67BBF6CZ",
+		"budget": "$78099.26"
+	},
+	{
+		"clientId": "YUM65SEX3UC",
+		"name": "Emerson Bird",
+		"surname": "Kaseem Cooley",
+		"email": "nullam.vitae@aol.com",
+		"password": "WZY34FHS8GH",
+		"budget": "$30925.61"
+	},
+	{
+		"clientId": "HMF87XCW1WY",
+		"name": "Len Mcmillan",
+		"surname": "Eliana Martinez",
+		"email": "sed.tortor@aol.couk",
+		"password": "SNK59VJB1YO",
+		"budget": "$77990.29"
+	}
+]
+}

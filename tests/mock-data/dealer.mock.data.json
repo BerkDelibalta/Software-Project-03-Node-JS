@@ -1,0 +1,138 @@
+{
+
+    "dealers": [
+
+        {
+        "id": "NQN93FKX5II",
+        "name": "Aston Martin London",
+        "cars": [
+            {
+                "id": "TYO13GSI8QN",
+                "model": "DB11",
+                "engineType": "Benzin",
+                "year": "Aug 9, 2022"
+        },
+        {
+                "id": "ZCK94LMF4SW",
+                "model": "Valkyrie",
+                "engineType": "Hybrid",
+                "year": "Dec 26, 2022"
+        },
+        {
+                "id": "ZJW44KLB1GQ",
+                "model": "Vantage V12",
+                "engineType": "Benzin",
+                "year": "Feb 3, 2022"
+        }
+    ]
+},
+{
+        "id": "GXG39WMF5RG",
+        "name": "Mercedes Benz Milan",
+        "cars":  [
+            {
+                "id": "SRK22OHD0WD",
+                "model": "E",
+                "engineType": "Hybrid",
+                "year": "Aug 15, 2021"
+           
+         },
+        {
+                "id": "HBE33NPB2VJ",
+                "model": "S",
+                "engineType": "Diesel",
+                "year": "Aug 23, 2022"
+        },
+        {
+                "id": "KPZ97IZD0PW",
+                "model": "A",
+                "engineType": "Hybrid",
+                "year": "Apr 10, 2023"
+        }
+        ]
+},
+{
+        "id": "OFI43HOS8UV",
+        "name": "BMW Bristol",
+        "cars": [
+            {
+                "id": "BVF91KJH4QG",
+                "model": "Serie 5",
+                "engineType": "Benzin",
+                "year": "Feb 1, 2022"
+        },
+        {
+                "id": "KZB67KYO3NV",
+                "model": "Serie 3",
+                "engineType": "Benzin",
+                "year": "Oct 11, 2022"
+        },
+        {
+                "id": "FZF57TDX0XD",
+                "model": "M5",
+                "engineType": "Benzin",
+                "year": "Jan 4, 2022"
+        },
+        {
+            "id": "JYV45OZW5GU",
+            "model": "X3",
+            "engineType": "Hybrid",
+            "year": "Nov 29, 2022"
+        },
+        {
+            "id": "QCS53UBI1ZN",
+            "model": "X5",
+            "engineType": "Hybrid",
+            "year": "Jan 25, 2023"
+        }
+        ]
+},
+{
+        "id": "YKR81LOO3WK",
+        "name": "Maserati Rome",
+        "cars": [
+            {
+                "id": "FPF47IJW1MV",
+                "model": "Grecale",
+                "engineType": "Hybrid"
+            
+        },
+        {
+                "id": "GWH92RGQ4MZ",
+                "model": "Ghibili",
+                "engineType": "Diesel",
+                "year": "Apr 6, 2023"
+        },
+        {
+                "id": "VQL20ETA5EN",
+                "model": "Quattroporte",
+                "engineType": "Hybrid",
+                "year": "Oct 3, 2022"
+        }
+        ]
+},
+{
+        "id": "PES33EBU2ME",
+        "name": "Ferrari Moscow",
+        "cars": [
+            {
+                "id": "VVR09ZJH8QG",
+                "model": "La Ferrari",
+                "engineType": "Benzin",
+                "year": "Dec 20, 2021"
+            },{
+                "id": "QSW68PDV4OW",
+                "model": "Stradale",
+                "engineType": "Hybrid",
+                "year": "Dec 23, 2022"
+            },{
+                "id": "REWG4EGOW",
+                "model": "Portofino",
+                "engineType": "Benzin",
+                "year": "Dec 23, 2022"
+            }
+        ]
+}      
+
+]
+}

@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const CustomError = require('../errors/index');
+const {NotFoundError, UnauthenticatedError,BadRequestError} = require('../errors/index');
 const {dynamoDBClient} = require('../db/AWSConnect');
 
 
@@ -18,17 +18,17 @@ const updateClient = async (req, res) => {
     const client = await dynamoDBClient.get(params).promise();
 
     if(!client) {
-        throw new CustomError.NotFoundError('No such client with id' + clientId);
+        throw new NotFoundError('No such client with id' + clientId);
     }
 
     const isPasswordMatching = client.Item.password === password;
     
     if(!isPasswordMatching) {
-        throw new Error("Invalid credentials");
+        throw new UnauthenticatedError("Invalid credentials");
     }
     
     if(!budget) {
-        throw new CustomError.BadRequestError('No such budget update');
+        throw new BadRequestError('No such budget update');
     }
 
     client.Item.budget = budget;
@@ -57,14 +57,14 @@ const deleteClient = async (req, res) => {
     const client = await dynamoDBClient.get(params).promise();
     
     if(!client) {
-        throw new CustomError.NotFoundError('No such client with id' + client.Item.id);
+        throw new NotFoundError('No such client with id' + client.Item.id);
     }
     
-   
+
     const isPasswordMatching = client.Item.password === password;
     
     if(!isPasswordMatching) {
-        throw new Error("Invalid credentials");
+        throw new UnauthenticatedError("Invalid credentials");
     }
 
    await dynamoDBClient.delete(params).promise();
@@ -79,7 +79,7 @@ const getAllClient = async (req, res) => {
     const clients = await dynamoDBClient.scan(params).promise();
 
     if(!clients) {
-       throw new CustomError.NotFoundError('No clients');
+       throw new NotFoundError('No clients');
     }
 
     res.status(StatusCodes.OK).json({clients,count:clients.length});
@@ -98,7 +98,7 @@ const getSingleClient = async (req, res) => {
     const client = await dynamoDBClient.get(params).promise();
 
     if(!client) {
-        throw new CustomError.NotFoundError('No such client with id' + clientId);
+        throw new NotFoundError('No such client with id' + clientId);
     }
 
     res.status(StatusCodes.OK).json(client);
