@@ -21,11 +21,11 @@ beforeEach(() => {
 describe("AuthController", () => {
 
 
-  for (let i = 0; i < Clients.length; i++) {
+  //for (let i = 0; i < Clients.length; i++) {
 
 
     beforeEach(() => {
-      req.body = Clients[i];
+      req.body = Clients[0];
     })
 
 
@@ -105,6 +105,6 @@ describe("AuthController", () => {
     })
 
 
-  }
+  //}
 
 });

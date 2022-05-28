@@ -10,8 +10,8 @@ const {Clients} = require('../mock-data/client.mock.data.json');
 jest.setTimeout(100000) 
 describe(registerendpointurl,() => {
 
-    for(let i = 0; i < Clients.length; i++) {
-        var client = Clients[i];
+   // for(let i = 0; i < Clients.length; i++) {
+        var client = Clients[0];
         var email = client.email;
             it('INTEGRATION TEST - should return correct credentials POST/REGISTER' + registerendpointurl, async () => {
                 await request(app)
@@ -27,7 +27,7 @@ describe(registerendpointurl,() => {
         })
         dynamoDBClient.delete({TableName:'Client', Key:{email}});
     });
-}
+//}
 
 
 

@@ -20,11 +20,11 @@ beforeEach(() => {
 describe("AuthController", () => {
 
 
-    for (let i = 0; i < Clients.length; i++) {
+  //  for (let i = 0; i < Clients.length; i++) {
 
 
         beforeEach(() => {
-            req.body = Clients[i];
+            req.body = Clients[0];
         })
 
 
@@ -33,8 +33,6 @@ describe("AuthController", () => {
         });
 
         it('should contain a response with signed cookie', async () => {
-            const client = Clients[i];
-            req.body = client;
             req._setMethod('GET');
 
                  await login(req, res)
@@ -50,10 +48,7 @@ describe("AuthController", () => {
         })
         
             it('should handle correct client credentials verification', async () => {
-                const client = Clients[i];
-                client.password = 'secret';
-                
-                req.body = client;
+                Clients.password = 'secret';
                 req._setMethod('GET');
 
                 await login(req, res)
@@ -67,10 +62,9 @@ describe("AuthController", () => {
         
 
         it('should handle missing parameter errors', async () => {
-            const client = Clients[i];
             req.body = {
-                name: client.name,
-                surname: client.surname
+                name: Clients[0].name,
+                surname: Clients[0].surname
             };
             req._setMethod('GET');
             await login(req, res)
@@ -84,6 +78,6 @@ describe("AuthController", () => {
         });
 
 
-    }
+   // }
 
 })
