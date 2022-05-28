@@ -15,7 +15,7 @@ describe(registerendpointurl,() => {
         var client = Clients[0];
         var email = client.email;
             it('INTEGRATION TEST - should return correct credentials POST/REGISTER' + registerendpointurl, async () => {
-              /*
+              
                 await request(app)
                 .post(registerendpointurl)
                 .send(client)
@@ -29,14 +29,14 @@ describe(registerendpointurl,() => {
         })
         dynamoDBClient.delete({TableName:'Client', Key:{email}});
    
-   */
+   
     });
 }
 
 
 
 it("INTEGRATION TEST - should return error 500 on malformed data with POST/REGISTER"  + registerendpointurl,() => {
-    /*
+    
     async () => {
         const response = await request(app)
         .post(endpointurl)
@@ -44,7 +44,7 @@ it("INTEGRATION TEST - should return error 500 on malformed data with POST/REGIS
         expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR); 
         expect(response.body).toStrictEqual({message: "Something went wrong try again later"});
     }
-*/
+
 })
 
 
