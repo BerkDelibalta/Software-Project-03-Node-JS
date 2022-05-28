@@ -38,9 +38,9 @@ describe("AuthController", () => {
                  await login(req, res)
                 .then((req) => {
 
-                    expect(req.signedCookies.email).toBe(client.name);
-                    expect(req.signedCookies.email).toBe(client.email);
-                    expect(req.signedCookies.email).toBe(client.password);
+                    expect(req.signedCookies.email).toBe(Clients[0].name);
+                    expect(req.signedCookies.email).toBe(Clients[0].email);
+                    expect(req.signedCookies.email).toBe(Clients[0].password);
                 })
                 .catch(() => {
                     console.log('LOGIN INF0 :  should contain a response with signed cookie catched')
