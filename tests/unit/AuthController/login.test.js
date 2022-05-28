@@ -33,14 +33,11 @@ describe("AuthController", () => {
         });
 
         it('should contain a response with signed cookie', async () => {
-            req._setMethod('GET');
-
-                 await login(req, res)
-                .then((req) => {
-
-                    expect(req.signedCookies.email).toBe(Clients[0].name);
-                    expect(req.signedCookies.email).toBe(Clients[0].email);
-                    expect(req.signedCookies.email).toBe(Clients[0].password);
+                await login(req, res)
+                .then((response) => {
+                    expect(response.signedCookies.email).toBe(Clients[0].name);
+                    expect(response.signedCookies.email).toBe(Clients[0].email);
+                    expect(response.signedCookies.email).toBe(Clients[0].password);
                 })
                 .catch(() => {
                     console.log('LOGIN INF0 :  should contain a response with signed cookie catched')
