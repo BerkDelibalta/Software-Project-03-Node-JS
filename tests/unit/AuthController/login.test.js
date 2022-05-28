@@ -32,6 +32,7 @@ describe("AuthController", () => {
             expect(typeof login).toBe('function');
         });
 
+        /*
         it('should contain a response with signed cookie', async () => {
                 await login(req, res)
                 .then((response) => {
@@ -43,7 +44,7 @@ describe("AuthController", () => {
                     console.log('LOGIN INF0 :  should contain a response with signed cookie catched')
                 })
         })
-        
+        */
             it('should handle correct client credentials verification', async () => {
                 Clients.password = 'secret';
                 req._setMethod('GET');
