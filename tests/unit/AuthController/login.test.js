@@ -1,4 +1,4 @@
-const { login } = require('../../../controller/AuthController');
+const { login } = require('../../../controller/authController');
 const httpMocks = require('node-mocks-http');
 
 const { Clients } = require('../../mock-data/client.mock.data.json');
