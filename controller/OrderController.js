@@ -79,7 +79,6 @@ const createOrder = async (req, res) => {
             date: dateObject.toUTCString()
         }
 
-        console.log(orderNotification)
 
         const updatedBudget = carPrice - clientBudget;
         client.Item.budget = updatedBudget.toString();
