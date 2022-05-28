@@ -1,21 +1,22 @@
 const Order = require('../models/Order');
 
 const { StatusCodes } = require('http-status-codes');
-const CustomError = require('../errors/index');
-const {dynamoDBClient} = require('../db/AWSConnect');
+const { BadRequestError } = require('../errors/BadRequestError');
+const { dynamoDBClient } = require('../db/AWSConnect');
+const { sendNotification } = require('../mailer/sendOrderNotification');
 
 
-const TABLE_NAME ='Order';
+const TABLE_NAME = 'Order';
 
 const createOrder = async (req, res) => {
-    const {clientId} = req.signedCookies;
-    const {carId:id, email} = req.body;
+    const { clientId } = req.signedCookies;
+    var { carId:id, email, dealerId } = req.body;
 
-    if(!id && !clientId) {
-        throw new CustomError.BadRequestError("Prodive both car and client id's");
+    if (!id && !clientId) {
+        throw new BadRequestError("Prodive both car and client id's");
     }
 
-    
+
     const params = {
         TableName: 'Car',
         Key: {
@@ -26,40 +27,81 @@ const createOrder = async (req, res) => {
     const car = await dynamoDBClient.get(params).promise();
 
 
-    if(!car){
+    if (!car) {
         throw new CustomError.BadRequestError("No such car existing!");
     }
 
     const clientParams = {
         TableName: 'Client',
-        Key: {email},
+        Key: { email },
     }
 
     const client = await dynamoDBClient.get(clientParams).promise();
 
-    
-    if(car.Item.price > client.Item.budget) {
-        throw new CustomError.BadRequestError("Client budget isn't sufficient to order")
+    const carPrice = parseInt(car.Item.price);
+    const clientBudget = parseInt(client.Item.budget);
+
+    if (carPrice > clientBudget) {
+        throw new BadRequestError("Client budget isn't sufficient to order");
     }
 
-    let dateObject = new Date();
-    const order = new Order(id ,clientId, email ,dateObject.toUTCString());
-    const createParams = {
-        TableName: TABLE_NAME,
-        Item : order,
-}
+    var id = dealerId;
+        const dealerParams = {
+            TableName: 'Dealer',
+            Key: { id },
+        }
 
-    await dynamoDBClient.put(createParams).promise();
+        const dealer = await dynamoDBClient.get(dealerParams).promise();
 
-    res.status(StatusCodes.OK).json(order);
+        if (!dealer) {
+            throw new BadRequestError("No such dealer found");
+        }
+
+        if (!dealer.Item.cars.map(car => car.id).includes(car.Item.id)) {
+            throw new BadRequestError("The dealer doesnt have the requested car!");
+        }
+
+        let dateObject = new Date();
+        const order = new Order(id, clientId, email, dateObject.toUTCString());
+        const createParams = {
+            TableName: TABLE_NAME,
+            Item: order,
+        }
+
+        await dynamoDBClient.put(createParams).promise();
+
+        const orderNotification = {
+            orderId: order.carId,
+            dealer: dealer.Item.name,
+            dealerMail: dealer.Item.email,
+            customerMail: client.Item.email,
+            carModel: car.Item.model,
+            date: dateObject.toUTCString()
+        }
+
+        console.log(orderNotification)
+
+        const updatedBudget = carPrice - clientBudget;
+        client.Item.budget = updatedBudget.toString();
+
+        const clientUpdateParams = {
+            TableName: 'Client', 
+            Key: {email},
+            Item: client,
+        }
+
+        await dynamoDBClient.update(clientUpdateParams).promise();
+        await sendNotification(orderNotification);
+        
+        res.status(StatusCodes.OK).json(order);
 
 }
 
 const updateOrder = async (req, res) => {
-    const {id:orderId} = req.params;
-    const {updatePrice} = req.body;
+    const { id: orderId } = req.params;
+    const { updatePrice } = req.body;
 
-    if(!orderId && !updatePrice){
+    if (!orderId && !updatePrice) {
         throw new CustomError.BadRequestError("Order id or update price doesnt exist");
     }
 
@@ -72,19 +114,19 @@ const updateOrder = async (req, res) => {
 
     const order = await dynamoDBClient.get(params).promise();
 
-    if(!order){
+    if (!order) {
         throw new CustomError.BadRequestError("No such order not found");
     }
 
-    
+
     const id = order.Item.carId;
-    
+
     const carParams = {
         TableName: 'Car',
-        Key:{id},
+        Key: { id },
     };
     const car = await dynamoDBClient.get(carParams).promise();
-    if(!car){
+    if (!car) {
         throw new CustomError.BadRequestError('No such car found');
     }
 
@@ -94,49 +136,49 @@ const updateOrder = async (req, res) => {
     car.Item.price = updatePrice;
     const carUpdateParams = {
         TableName: 'Car',
-        Key:{id},
+        Key: { id },
         Item: car,
     }
 
     const orderUpdateParams = {
         TableName: TABLE_NAME,
-        Key: {orderId},
-        Item: {order},
+        Key: { orderId },
+        Item: { order },
     }
 
     await dynamoDBClient.update(carUpdateParams).promise();
     await dynamoDBClient.update(orderUpdateParams).promise();
 
-  
+
     res.status(StatusCodes.OK).json({
         Order: {
-            message: 'Order no:'+ orderId +' updated successfully'
+            message: 'Order no:' + orderId + ' updated successfully'
         }
         ,
         Car: {
-        updatedCar : model,
-        oldPrice: oldPrice,
-        newPrice : updatePrice,
+            updatedCar: model,
+            oldPrice: oldPrice,
+            newPrice: updatePrice,
         }
     });
 
 }
 
 const deleteOrder = async (req, res) => {
-    const {id:orderId} = req.params;
+    const { id: orderId } = req.params;
 
-    if(!orderId){
+    if (!orderId) {
         throw new CustomError.BadRequestError("No such orderId");
     }
 
     const params = {
         TableName: TABLE_NAME,
-        Key: {orderId}
+        Key: { orderId }
     }
 
     const order = await dynamoDBClient.get(params).promise();
 
-    if(!order){
+    if (!order) {
         throw new CustomError.BadRequestError("No such order");
     }
 
@@ -146,23 +188,23 @@ const deleteOrder = async (req, res) => {
 }
 
 const getSingleOrder = async (req, res) => {
-    const {id:orderId} = req.params;
+    const { id: orderId } = req.params;
 
-    if(!orderId){
+    if (!orderId) {
         throw new CustomError.BadRequestError("No such orderId");
     }
 
     const params = {
         TableName: TABLE_NAME,
-        Key:{orderId}
+        Key: { orderId }
     }
 
     const order = await dynamoDBClient.get(params).promise();
 
-   if(!order){
-       throw new CustomError.BadRequestError("No such order");
-   }
-   
+    if (!order) {
+        throw new CustomError.BadRequestError("No such order");
+    }
+
     res.status(StatusCodes.OK).json(order);
 }
 
@@ -174,7 +216,7 @@ const getOrders = async (req, res) => {
 
     const orders = await dynamoDBClient.scan(params).promise();
 
-    res.status(StatusCodes.OK).json({Orders: orders, count:orders.length});
+    res.status(StatusCodes.OK).json({ Orders: orders, count: orders.length });
 }
 
 
