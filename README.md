@@ -17,7 +17,7 @@ ____
 
 ----
 
-<h3 style="color:cornsilk">The Language, Framework and Database used</h3>
+<h3 style="color:cornsilk">The Language, Frameworks and Database used</h3>
 
 <div>
 <ol style="color: cornsilk;font-size: medium">
