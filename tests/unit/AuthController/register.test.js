@@ -96,9 +96,9 @@ describe("AuthController", () => {
     it('should contain a response with signed cookie', async () => {
       const response = register(req, res)
         .then(() => {
-          expect(response.signedCookies.name).toBe(client.name);
-          expect(response.signedCookies.email).toBe(client.email);
-          expect(response.signedCookies.password).toBe(client.password);
+          expect(response.signedCookies.name).toBe(Clients[0].name);
+          expect(response.signedCookies.email).toBe(Clients[0].email);
+          expect(response.signedCookies.password).toBe(Clients[0].password);
         })
       const email = req.body.email;
       dynamoDBClient.delete({ TableName: 'Client', Key: { email } });
