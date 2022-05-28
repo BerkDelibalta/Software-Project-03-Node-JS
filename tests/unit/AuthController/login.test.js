@@ -1,24 +1,12 @@
-const { login } = require('../../../controller/authController');
+const { login } = require('../../../controller/AuthController');
 const httpMocks = require('node-mocks-http');
 
 const { Clients } = require('../../mock-data/client.mock.data.json');
 const CustomAPIError = require('../../../errors/custom-api');
 
-//const { dynamoDBClient } = require('../../../db/AWSConnect');
+const { dynamoDBClient } = require('../../../db/AWSConnect');
 
-const AWS = require('aws-sdk');
-require('dotenv').config();
-
-    AWS.config.update({
-        region:process.env.AWS_DEFAULT_REGION,
-        accessKeyId:process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY
-    });
-
-
-const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
-
-let req, res, next;
+let req, res, next, client;
 dynamoDBClient.put = jest.fn();
 CustomAPIError.BadRequestError = jest.fn();
 
@@ -32,11 +20,11 @@ beforeEach(() => {
 describe("AuthController", () => {
 
 
-  //  for (let i = 0; i < Clients.length; i++) {
+    for (let i = 0; i < Clients.length; i++) {
 
 
         beforeEach(() => {
-            req.body = Clients[0];
+            client = Clients[i];
         })
 
 
@@ -44,21 +32,25 @@ describe("AuthController", () => {
             expect(typeof login).toBe('function');
         });
 
-        /*
         it('should contain a response with signed cookie', async () => {
-                await login(req, res)
-                .then((response) => {
-                    expect(response.signedCookies.email).toBe(Clients[0].name);
-                    expect(response.signedCookies.email).toBe(Clients[0].email);
-                    expect(response.signedCookies.email).toBe(Clients[0].password);
+            req.body = client;
+            req._setMethod('GET');
+
+                 await login(req, res)
+                .then((req) => {
+
+                    expect(req.signedCookies.email).toBe(client.name);
+                    expect(req.signedCookies.email).toBe(client.email);
+                    expect(req.signedCookies.email).toBe(client.password);
                 })
                 .catch(() => {
                     console.log('LOGIN INF0 :  should contain a response with signed cookie catched')
                 })
         })
-        */
+        
             it('should handle correct client credentials verification', async () => {
-                Clients.password = 'secret';
+                client.password = 'secret';   
+                req.body = client;
                 req._setMethod('GET');
 
                 await login(req, res)
@@ -73,8 +65,8 @@ describe("AuthController", () => {
 
         it('should handle missing parameter errors', async () => {
             req.body = {
-                name: Clients[0].name,
-                surname: Clients[0].surname
+                name: client.name,
+                surname: client.surname
             };
             req._setMethod('GET');
             await login(req, res)
@@ -88,6 +80,6 @@ describe("AuthController", () => {
         });
 
 
-   // }
+    }
 
 })
