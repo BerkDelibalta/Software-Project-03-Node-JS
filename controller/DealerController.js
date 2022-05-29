@@ -9,10 +9,10 @@ const TABLE_NAME = 'Dealer';
 
 
 const createDealer = async (req, res) => {
-    const { name, email, cars} = req.body;
+    const { name, email, cars } = req.body;
 
-    if (!name) {
-        throw new CustomError.BadRequestError('Enter the dealer name');
+    if (!name || !email) {
+        throw new CustomError.BadRequestError('Provide all required parameters');
     }
     console.log(cars)
     const dealer = new Dealer(name, email, cars);

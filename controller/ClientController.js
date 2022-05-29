@@ -1,41 +1,41 @@
 const { StatusCodes } = require('http-status-codes');
-const {NotFoundError, UnauthenticatedError,BadRequestError} = require('../errors/index');
-const {dynamoDBClient} = require('../db/AWSConnect');
+const { NotFoundError, UnauthenticatedError, BadRequestError } = require('../errors/index');
+const { dynamoDBClient } = require('../db/AWSConnect');
 
 
-const TABLE_NAME ='Client';
+const TABLE_NAME = 'Client';
 
 
 const updateClient = async (req, res) => {
-    const {email,password, budget} = req.body;
+    const { email, password, budget } = req.body;
     const params = {
         TableName: TABLE_NAME,
         Key: {
             email,
-          },
-};
-    
+        },
+    };
+
     const client = await dynamoDBClient.get(params).promise();
 
-    if(!client) {
+    if (!client) {
         throw new NotFoundError('No such client with id' + clientId);
     }
 
     const isPasswordMatching = client.Item.password === password;
-    
-    if(!isPasswordMatching) {
+
+    if (!isPasswordMatching) {
         throw new UnauthenticatedError("Invalid credentials");
     }
-    
-    if(!budget) {
+
+    if (!budget) {
         throw new BadRequestError('No such budget update');
     }
 
     client.Item.budget = budget;
-   
+
     const updateParams = {
         TableName: TABLE_NAME,
-        Key: { email},
+        Key: { email },
         Item: client,
     }
 
@@ -45,31 +45,31 @@ const updateClient = async (req, res) => {
 
 
 const deleteClient = async (req, res) => {
-    const { email , password} = req.body;
+    const { email, password } = req.body;
     const params = {
         TableName: TABLE_NAME,
         Key: {
             email
-          },
-         
-};
-    
+        },
+
+    };
+
     const client = await dynamoDBClient.get(params).promise();
-    
-    if(!client) {
+
+    if (!client) {
         throw new NotFoundError('No such client with id' + client.Item.id);
     }
-    
+
 
     const isPasswordMatching = client.Item.password === password;
-    
-    if(!isPasswordMatching) {
+
+    if (!isPasswordMatching) {
         throw new UnauthenticatedError("Invalid credentials");
     }
 
-   await dynamoDBClient.delete(params).promise();
-   res.status(StatusCodes.OK).send("Client with email " + email + " has been successfully deleted");
- 
+    await dynamoDBClient.delete(params).promise();
+    res.status(StatusCodes.OK).send("Client with email " + email + " has been successfully deleted");
+
 }
 
 const getAllClient = async (req, res) => {
@@ -78,26 +78,26 @@ const getAllClient = async (req, res) => {
     }
     const clients = await dynamoDBClient.scan(params).promise();
 
-    if(!clients) {
-       throw new NotFoundError('No clients');
+    if (!clients) {
+        throw new NotFoundError('No clients');
     }
 
-    res.status(StatusCodes.OK).json({clients,count:clients.length});
-   
+    res.status(StatusCodes.OK).json({ clients, count: clients.length });
+
 }
 
 const getSingleClient = async (req, res) => {
-    const {email} = req.body;
+    const { email } = req.body;
     const params = {
         TableName: TABLE_NAME,
         Key: {
             email
-          },
+        },
     }
-    
+
     const client = await dynamoDBClient.get(params).promise();
 
-    if(!client) {
+    if (!client) {
         throw new NotFoundError('No such client with id' + clientId);
     }
 

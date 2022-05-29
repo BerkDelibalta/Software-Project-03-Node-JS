@@ -1,7 +1,7 @@
 const Client = require("../models/Client");
 
 const HttpStatus = require("http-status-codes");
-const {BadRequestError,UnauthenticatedError} = require("../errors/index");
+const { BadRequestError, UnauthenticatedError } = require("../errors/index");
 const { attachCookiesToResponse, createTokenUser } = require("../utils");
 const { dynamoDBClient } = require("../db/AWSConnect");
 
@@ -30,24 +30,24 @@ const register = async (req, res) => {
     };
 
     const client = await dynamoDBClient.get(params).promise();
-        if (client.Item === undefined) {
-            const clients = await dynamoDBClient.scan(params).promise();
-            const isFirstAccount = clients.Items.length === 0;
-            const role = isFirstAccount ? "admin" : "user";
+    if (client.Item === undefined) {
+        const clients = await dynamoDBClient.scan(params).promise();
+        const isFirstAccount = clients.Items.length === 0;
+        const role = isFirstAccount ? "admin" : "user";
 
-            const clientObject = new Client(clientId, name, surname, email, password, budget, role);
-            const registerParams = {
-                TableName: TABLE_NAME,
-                Item: clientObject
-            };
+        const clientObject = new Client(clientId, name, surname, email, password, budget, role);
+        const registerParams = {
+            TableName: TABLE_NAME,
+            Item: clientObject
+        };
 
-            await dynamoDBClient.put(registerParams).promise();
-            const tokenClient = createTokenUser(clientObject);
-            attachCookiesToResponse({ res, client: tokenClient });
-            res.status(HttpStatus.StatusCodes.CREATED).json(clientObject);
-        } else {
-            throw new BadRequestError("Client already exists");
-        }
+        await dynamoDBClient.put(registerParams).promise();
+        const tokenClient = createTokenUser(clientObject);
+        attachCookiesToResponse({ res, client: tokenClient });
+        res.status(HttpStatus.StatusCodes.CREATED).json(clientObject);
+    } else {
+        throw new BadRequestError("Client already exists");
+    }
 };
 
 const login = async (req, res) => {

@@ -49,7 +49,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/cars', CarRouter);
 app.use('/api/v1/clients', ClientRouter);
 app.use('/api/v1/dealers', DealerRouter);
-app.use('/api/v1/order',OrderRouter);
+app.use('/api/v1/order', OrderRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
