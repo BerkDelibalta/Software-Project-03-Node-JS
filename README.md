@@ -382,7 +382,7 @@ Advanced design and feature showcasing as a whole range API model pattern along 
 -----
 ## Appendix
 
-More Detailed roadmap will so soon provided here :) 
+More Detailed roadmap will be soon provided here :) 
 
 
 ## Authors
