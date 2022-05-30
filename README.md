@@ -403,7 +403,7 @@ To run this project, you will need to add the following environment variables to
 `region`
 
 `JWT_SECRET`
-`JWT_LIFETIME = 1`
+`JWT_LIFETIME`
 
 `SENDGRID_API_KEY`
 
