@@ -382,7 +382,25 @@ Advanced design and feature showcasing as a whole range API model pattern along 
 -----
 ## Appendix
 
-More Detailed roadmap will be soon provided here :) 
+#### The project is working in the following way:
+
+1) A client user should register (him/her)self into the system by the assistance of the auth/register API endpoint, this is essentially a key point to be    able use and send requests to the other API end points in the Software as a consequence of the authentication and authorization middlewares existince.
+
+2) In order to be able to trip around the project without having issues, its necessary to log into your account after registration, as this process        enables the API to send the encrypted and tokenized information (JWT) in a cookie to the server. (If you call the logout API end point, it will simply    delete and remove your token attached into a cookie from server, so you should once again login later on to be able use the Software) 
+
+3) The second point should be, creating car(s) and populating the database for cars to be used later to populate the dealer table's car list items with      the respected car models. 
+
+4) The third point is, calling the right dealer API end points to create dealer(s) with different car models that they can sell.
+
+
+5) Finally, you are able to call the Order API and create an order, if your order is successful, the algorithm lets you make the order and sends
+   you a notification mail(the email you indicated during registration) Notice: The dealer email is going to be the source email address that will 
+   send you the notification email, so please carefully choose the dealer email to make sure you can use this account under your control.
+   
+
+ ##### Extra information regarding the Client API
+
+  This API is basically enabling you to do CRUD operations on the profile(s) you have created, there is not so many updates are allowed, though if you want an extensive update features, please let me know, or you can simply come along with your own idea(s) to contribute to the project to add new     features,upgrade the Software,increase performace and many more! Looking forward to hear from you, Thanks for your time and energy you spend to look at this project dear visiter!
 
 
 ## Authors
