@@ -10,7 +10,7 @@ const TABLE_NAME = 'Order';
 
 const createOrder = async (req, res) => {
     const { clientId } = req.signedCookies;
-    var { carId: id, email, dealerId } = req.body;
+    let { carId: id, email, dealerId } = req.body;
 
     if (!id && !clientId) {
         throw new BadRequestError("Prodive both car and client id's");
@@ -45,7 +45,8 @@ const createOrder = async (req, res) => {
         throw new BadRequestError("Client budget isn't sufficient to order");
     }
 
-    var id = dealerId;
+    //change the id variable's value
+    id = dealerId;
     const dealerParams = {
         TableName: 'Dealer',
         Key: { id },
@@ -57,7 +58,7 @@ const createOrder = async (req, res) => {
         throw new BadRequestError("No such dealer found");
     }
 
-    if (!dealer.Item.cars.map(car => car.id).includes(car.Item.id)) {
+    if (!dealer.Item.cars.map(carObj => carObj.id).includes(car.Item.id)) {
         throw new BadRequestError("The dealer doesnt have the requested car!");
     }
 
