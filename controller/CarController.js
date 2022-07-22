@@ -11,7 +11,7 @@ const getAllCars = async (req, res) => {
         TableName: TABLE_NAME,
     };
     const cars = await dynamoDBClient.scan(params).promise();
-    if (cars == {}) {
+    if (!cars) {
         throw new CustomError.NotFoundError('No cars found');
     } else {
         res.status(StatusCodes.OK).json({ cars, count: cars.length });
@@ -29,7 +29,7 @@ const getSingleCar = async (req, res) => {
 
     const car = await dynamoDBClient.get(params).promise();
 
-    if (car == {}) {
+    if (!car) {
         throw new CustomError.NotFoundError('No car found with id ' + carId);
     } else {
         res.status(StatusCodes.OK).json(car);
@@ -69,8 +69,8 @@ const updateCar = async (req, res) => {
 
     const car = await dynamoDBClient.get(params).promise();
 
-    if (car == {} || car === undefined) {
-        throw new CustomError.NotFoundError('No such car found with id' + carId);
+    if (!car) {
+        throw new CustomError.NotFoundError('No such car found with id' + car.Item.id);
     } 
 
 
@@ -100,7 +100,7 @@ const deleteCar = async (req, res) => {
 
     const car = await dynamoDBClient.get(params).promise();
 
-    if (car == {} || car === undefined) {
+    if (!car) {
         throw new CustomError.NotFoundError('No such car found with id' + id);
     } else {
 
