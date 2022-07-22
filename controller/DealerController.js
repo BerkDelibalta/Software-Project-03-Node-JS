@@ -39,7 +39,7 @@ const updateDealer = async (req, res) => {
 
     const dealer = await dynamoDBClient.get(params).promise();
 
-    if (dealer === {}) {
+    if (dealer == {}) {
         throw new CustomError.NotFoundError('No such dealer found with id' + dealerId);
     } else {
 
@@ -76,7 +76,7 @@ const deleteDealer = async (req, res) => {
 
     const dealer = await dynamoDBClient.get(params).promise();
 
-    if (dealer === {}) {
+    if (dealer == {}) {
         throw new CustomError.NotFoundError('No such dealer found with id' + dealerId);
     } else {
 
@@ -93,7 +93,7 @@ const getAllDealers = async (req, res) => {
 
     const dealers = await dynamoDBClient.scan(params).promise();
 
-    if (dealers === {}) {
+    if (dealers == {}) {
         throw new CustomError.NotFoundError('No such dealers found');
     } else {
         res.status(StatusCodes.OK).json({ dealers, count: dealers.length });
@@ -110,7 +110,7 @@ const getSingleDealer = async (req, res) => {
     };
 
     const dealer = await dynamoDBClient.get(params).promise();
-    if (dealer === {}) {
+    if (dealer == {}) {
         throw new CustomError.NotFoundError('No such dealer found with id ' + dealerId);
     } else {
         res.status(StatusCodes.OK).json(dealer);

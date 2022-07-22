@@ -35,8 +35,15 @@ app.use(rateLimiter({
     max: 60,
 }));
 
+var corsOptions = {
+    origin: `http://localhost:${process.env.PORT}`,
+    optionsSuccessStatus: ["200","201"] ,
+    optionsFailureStatus: ["400","404","500","503"],
+    methods: ["GET","PUT","POST","DELETE"],
+}
+
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(xss());
 
 app.use(morgan('tiny'));
