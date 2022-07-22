@@ -1,6 +1,0 @@
-projectKey=Software-NodeJS-project03
-serverUrl=http://localhost:9000
-serverVersion=9.5.0.56709
-dashboardUrl=http://localhost:9000/dashboard?id=Software-NodeJS-project03
-ceTaskId=AYImx3o1uMbLToPT9lSQ
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYImx3o1uMbLToPT9lSQ
