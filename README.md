@@ -3,8 +3,6 @@
 
 Advanced design and feature showcasing as a whole range API model pattern along with AWS DynamoDB integration for those interested.
 
-## Attention!
- New feature additions are on the way! Payment and User password reset features coming soon😉 
 
 ## Acknowledgement
 
