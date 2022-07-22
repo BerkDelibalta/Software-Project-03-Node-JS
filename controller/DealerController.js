@@ -39,7 +39,7 @@ const updateDealer = async (req, res) => {
 
     const dealer = await dynamoDBClient.get(params).promise();
 
-    if (dealer == {}) {
+    if (!dealer) {
         throw new CustomError.NotFoundError('No such dealer found with id' + dealerId);
     } else {
 

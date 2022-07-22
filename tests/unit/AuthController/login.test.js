@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { login } = require('../../../controller/authController');
 const httpMocks = require('node-mocks-http');
 
@@ -49,7 +50,7 @@ describe("AuthController", () => {
         })
         
             it('should handle correct client credentials verification', async () => {
-                client.password = 'secret';   
+                client.password = process.env.JWT_SECRET;   
                 req.body = client;
                 req._setMethod('GET');
 
